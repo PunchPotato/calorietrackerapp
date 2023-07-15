@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import font
 from tkinter import *
 from PIL import ImageTk, Image
+from tkinter import messagebox
 
 
 class SignupPage(tk.Tk):
@@ -27,32 +28,39 @@ class SignupPage(tk.Tk):
 
         self.email_entry = tk.Entry(self, font=("typewriter", 20, "normal"), fg="white", bg='#0d2158', width=30)
         self.email_entry.place(y=325, x=150)
-        self.email_entry.bind("<FocusIn>", self.temp_name_entry_text)
 
         username_title = tk.Label(self, text='Username:', font=("typewriter", 15, "normal"), bg='white', fg='#0d2158')
         username_title.place(y=395, x=150)
 
         self.username_entry = tk.Entry(self, font=("typewriter", 20, "normal"), fg="white", bg='#0d2158', width=30)
         self.username_entry.place(y=425, x=150)
-        self.username_entry.bind("<FocusIn>", self.temp_name_entry_text)
 
         password_title = tk.Label(self, text='Password:', font=("typewriter", 15, "normal"), bg='white', fg='#0d2158')
         password_title.place(y=495, x=150)
 
         self.password_entry = tk.Entry(self, font=("typewriter", 20, "normal"), fg="white", bg='#0d2158', width=30)
         self.password_entry.place(y=525, x=150)
-        self.password_entry.bind("<FocusIn>", self.temp_password_entry_text)
 
-        confirm_password_title = tk.Label(self, text='Password:', font=("typewriter", 15, "normal"), bg='white', fg='#0d2158')
+        confirm_password_title = tk.Label(self, text='Comfirm Password:', font=("typewriter", 15, "normal"), bg='white', fg='#0d2158')
         confirm_password_title.place(y=595, x=150)
 
-        self.password_comfirm_entry = tk.Entry(self, font=("typewriter", 20, "normal"), fg="white", bg='#0d2158', width=30)
+        self.password_comfirm_entry = tk.Entry(self, font=("typewriter", 20, "normal"), fg="white", bg='#0d2158',
+                                               width=30)
         self.password_comfirm_entry.place(y=625, x=150)
-        self.password_comfirm_entry.bind("<FocusIn>", self.temp_password_entry_text)
 
         create_account_button = tk.Button(self, text="Create Account", font=("typewriter", 20, "bold"), bd=0,
-                                          bg='#0d2158',activebackground='#0d2158', cursor='hand2', fg="white", width=19)
+                                          bg='#0d2158', activebackground='#0d2158', cursor='hand2', fg="white",
+                                          width=19)
         create_account_button.place(y=700, x=210)
+
+        create_account_button.bind("<Button-1>", self.check_password_match)
+
+        self.terms_and_conditions_label= Label(self, text="I agree to Terms & Conditions", font=('Open Sans', 12),
+                                               fg='firebrick1', bg='white')
+        self.terms_and_conditions_label.place(x=270, y=665)
+
+        terms_and_conditions_box = tk.Checkbutton(self, bd=0, bg='white')
+        terms_and_conditions_box.place(x=245, y=665)
 
         self.signupLabel = Label(self, text="Or...", font=('Open Sans', 9), fg='firebrick1',
                                  bg='white')
@@ -63,18 +71,26 @@ class SignupPage(tk.Tk):
                                        cursor='hand2', bd=0, command=self.signup_page)
         self.newaccountButton.place(x=360, y=760)
 
-
-    def temp_name_entry_text(self, event):
-        self.email_entry.delete(0, "end")
-
-    def temp_password_entry_text(self, event):
-        self.password_entry.delete(0, "end")
-
     def signup_page(self):
-        Sign_up_page.destroy()
+        self.destroy()
         import Login
         Login.LoginPage().mainloop()
 
+    def password_mismatch(self, event):
+        messagebox.showerror("Error", "Passwords do not match.")
+
+    def check_password_match(self, event):
+        password = self.password_entry.get()
+        confirm_password = self.password_comfirm_entry.get()
+
+        if password != confirm_password:
+            self.password_mismatch(self)
+        else:
+            self.create_account()
+
+    def create_account(self):
+        # Account creation logic goes here
+        messagebox.showinfo("Success", "Account created successfully!")
 
 
 if __name__ == "__main__":
