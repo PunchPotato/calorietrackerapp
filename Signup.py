@@ -3,6 +3,7 @@ from tkinter import font
 from tkinter import *
 from PIL import ImageTk, Image
 from tkinter import messagebox
+import pymysql
 
 
 class SignupPage(tk.Tk):
@@ -41,7 +42,8 @@ class SignupPage(tk.Tk):
         self.password_entry = tk.Entry(self, font=("typewriter", 20, "normal"), fg="white", bg='#0d2158', width=30)
         self.password_entry.place(y=525, x=150)
 
-        confirm_password_title = tk.Label(self, text='Comfirm Password:', font=("typewriter", 15, "normal"), bg='white', fg='#0d2158')
+        confirm_password_title = tk.Label(self, text='Comfirm Password:', font=("typewriter", 15, "normal"), bg='white',
+                                          fg='#0d2158')
         confirm_password_title.place(y=595, x=150)
 
         self.password_comfirm_entry = tk.Entry(self, font=("typewriter", 20, "normal"), fg="white", bg='#0d2158',
@@ -50,10 +52,8 @@ class SignupPage(tk.Tk):
 
         create_account_button = tk.Button(self, text="Create Account", font=("typewriter", 20, "bold"), bd=0,
                                           bg='#0d2158', activebackground='#0d2158', cursor='hand2', fg="white",
-                                          width=19)
+                                          width=19, command=self.connect_database)
         create_account_button.place(y=700, x=210)
-
-        create_account_button.bind("<Button-1>", self.check_password_match)
 
         self.terms_and_conditions_label= Label(self, text="I agree to Terms & Conditions", font=('Open Sans', 12),
                                                fg='firebrick1', bg='white')
@@ -76,21 +76,16 @@ class SignupPage(tk.Tk):
         import Login
         Login.LoginPage().mainloop()
 
-    def password_mismatch(self, event):
-        messagebox.showerror("Error", "Passwords do not match.")
-
-    def check_password_match(self, event):
-        password = self.password_entry.get()
-        confirm_password = self.password_comfirm_entry.get()
-
-        if password != confirm_password:
-            self.password_mismatch(self)
-        else:
-            self.create_account()
-
     def create_account(self):
         # Account creation logic goes here
         messagebox.showinfo("Success", "Account created successfully!")
+
+    def connect_database(self):
+        if self.email_entry.get() == '' or self.username_entry.get() == '' or self.password_entry.get() == '' or\
+                self.password_comfirm_entry.get() == '':
+            messagebox.showerror("Error", "All fields must be filled.")
+        elif self.password_comfirm_entry.get() != self.password_comfirm_entry:
+            messagebox.showerror("Error", "Passwords do not match.")
 
 
 if __name__ == "__main__":
