@@ -87,7 +87,7 @@ class SignupPage(tk.Tk):
 
     def create_account(self):
         try:
-            con = pymysql.connect(host='localhost', user='root', password='************')
+            con = pymysql.connect(host='localhost', user='root', password='Creatinemonohydrate04!')
             my_cursor = con.cursor()
             query = 'create database if not exists mydatabase'
             my_cursor.execute(query)
@@ -98,17 +98,24 @@ class SignupPage(tk.Tk):
             my_cursor.execute(query)
             con.commit()
 
-            query = 'insert into user_data (email, username, password) values(%s, %s, %s)'
-            my_cursor.execute(query, (self.email_entry.get(), self.username_entry.get(), self.password_entry.get()))
+            query = 'select * from user_data where username =%s'
+            my_cursor.execute(query, (self.username_entry.get()))
 
-            con.commit()
-            con.close()
+            row = my_cursor.fetchone()
+            if row != None:
+                messagebox.showerror("Error", "username already exists.")
+            else:
+                query = 'insert into user_data (email, username, password) values(%s, %s, %s)'
+                my_cursor.execute(query, (self.email_entry.get(), self.username_entry.get(), self.password_entry.get()))
 
-            messagebox.showinfo("Success", "Account created successfully!")
-            self.clear()
-            self.destroy()
-            import Login
-            Login.LoginPage().mainloop()
+                con.commit()
+                con.close()
+
+                messagebox.showinfo("Success", "Account created successfully!")
+                self.clear()
+                self.destroy()
+                import Login
+                Login.LoginPage().mainloop()
 
         except pymysql.Error as e:
             messagebox.showerror("Error", f"Failed to connect to the database. Error: {str(e)}")
