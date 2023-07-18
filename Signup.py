@@ -59,7 +59,8 @@ class SignupPage(tk.Tk):
                                                fg='firebrick1', bg='white')
         self.terms_and_conditions_label.place(x=270, y=665)
 
-        terms_and_conditions_box = tk.Checkbutton(self, bd=0, bg='white')
+        self.check = IntVar()
+        terms_and_conditions_box = tk.Checkbutton(self, bd=0, bg='white', variable=self.check)
         terms_and_conditions_box.place(x=245, y=665)
 
         self.signupLabel = Label(self, text="Or...", font=('Open Sans', 9), fg='firebrick1',
@@ -77,15 +78,35 @@ class SignupPage(tk.Tk):
         Login.LoginPage().mainloop()
 
     def create_account(self):
-        # Account creation logic goes here
-        messagebox.showinfo("Success", "Account created successfully!")
+        try:
+            con = pymysql.connect(host='localhost', user='root', password='Creatinemonohydrate04!',
+                                  database='your_database_name')
+            my_curser = con.cursor()
+            messagebox.showinfo("Success", "Account created successfully!")
+        except:
+            messagebox.showerror("Error", "Failed to connect to the database.")
+            return
+
+        query = 'create database mydatabase'
+        my_curser.execute(query)
+        query = 'use mydatabase'
+        my_curser.execute(query)
+        query = 'create table user_data(id int auto_increment primary key not null, email varchar(50), ' \
+                'username varchar(100), password varchar(20))'
+        my_curser.execute(query)
+
+        con.commit()
 
     def connect_database(self):
         if self.email_entry.get() == '' or self.username_entry.get() == '' or self.password_entry.get() == '' or\
                 self.password_comfirm_entry.get() == '':
             messagebox.showerror("Error", "All fields must be filled.")
-        elif self.password_comfirm_entry.get() != self.password_comfirm_entry:
+        elif self.password_comfirm_entry.get() != self.password_comfirm_entry.get():
             messagebox.showerror("Error", "Passwords do not match.")
+        elif self.check.get() == 0:
+            messagebox.showerror("Error", "Accept Terms & Conditions.")
+        else:
+            self.create_account()
 
 
 if __name__ == "__main__":
