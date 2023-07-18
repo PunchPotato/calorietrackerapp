@@ -72,6 +72,14 @@ class SignupPage(tk.Tk):
                                        cursor='hand2', bd=0, command=self.signup_page)
         self.newaccountButton.place(x=360, y=760)
 
+    def clear(self):
+        self.email_entry.delete(0, END)
+        self.username_entry.delete(0, END)
+        self.password_entry.delete(0, END)
+        self.password_comfirm_entry.delete(0, END)
+        self.check.set(0)
+
+
     def signup_page(self):
         self.destroy()
         import Login
@@ -89,7 +97,19 @@ class SignupPage(tk.Tk):
                     'email varchar(50), username varchar(100), password varchar(20))'
             my_cursor.execute(query)
             con.commit()
+
+            query = 'insert into user_data (email, username, password) values(%s, %s, %s)'
+            my_cursor.execute(query, (self.email_entry.get(), self.username_entry.get(), self.password_entry.get()))
+
+            con.commit()
+            con.close()
+
             messagebox.showinfo("Success", "Account created successfully!")
+            self.clear()
+            self.destroy()
+            import Login
+            Login.LoginPage().mainloop()
+
         except pymysql.Error as e:
             messagebox.showerror("Error", f"Failed to connect to the database. Error: {str(e)}")
             return
@@ -107,8 +127,5 @@ class SignupPage(tk.Tk):
 
 
 if __name__ == "__main__":
-    Sign_up_page = SignupPage()
-    Sign_up_page.mainloop()
-
     Sign_up_page = SignupPage()
     Sign_up_page.mainloop()
