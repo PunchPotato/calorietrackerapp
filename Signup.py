@@ -87,7 +87,7 @@ class SignupPage(tk.Tk):
 
     def create_account(self):
         try:
-            con = pymysql.connect(host='localhost', user='root', password='Creatinemonohydrate04!')
+            con = pymysql.connect(host='localhost', user='root', password='****************')
             my_cursor = con.cursor()
             query = 'create database if not exists mydatabase'
             my_cursor.execute(query)
