@@ -4,6 +4,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 from tkinter import messagebox
 import pymysql
+import re
 
 
 class SignupPage(tk.Tk):
@@ -79,7 +80,6 @@ class SignupPage(tk.Tk):
         self.password_comfirm_entry.delete(0, END)
         self.check.set(0)
 
-
     def signup_page(self):
         self.destroy()
         import Login
@@ -87,7 +87,7 @@ class SignupPage(tk.Tk):
 
     def create_account(self):
         try:
-            con = pymysql.connect(host='localhost', user='root', password='****************')
+            con = pymysql.connect(host='localhost', user='root', password='***************')
             my_cursor = con.cursor()
             query = 'create database if not exists mydatabase'
             my_cursor.execute(query)
@@ -98,12 +98,12 @@ class SignupPage(tk.Tk):
             my_cursor.execute(query)
             con.commit()
 
-            query = 'select * from user_data where username =%s'
-            my_cursor.execute(query, (self.username_entry.get()))
+            query = 'SELECT * FROM user_data WHERE username = %s OR email = %s'
+            my_cursor.execute(query, (self.username_entry.get(), self.email_entry.get()))
 
             row = my_cursor.fetchone()
             if row != None:
-                messagebox.showerror("Error", "username already exists.")
+                messagebox.showerror("Error", "Username or email already exists.")
             else:
                 query = 'insert into user_data (email, username, password) values(%s, %s, %s)'
                 my_cursor.execute(query, (self.email_entry.get(), self.username_entry.get(), self.password_entry.get()))
@@ -122,15 +122,22 @@ class SignupPage(tk.Tk):
             return
 
     def connect_database(self):
+        email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
         if self.email_entry.get() == '' or self.username_entry.get() == '' or self.password_entry.get() == '' or\
                 self.password_comfirm_entry.get() == '':
             messagebox.showerror("Error", "All fields must be filled.")
-        elif self.password_comfirm_entry.get() != self.password_comfirm_entry.get():
+        elif re.match(email_pattern, self.email_entry.get()):
+            pass
+        else:
+            messagebox.showerror("Error", "Email not valid.")
+        if self.password_comfirm_entry.get() != self.password_entry.get():
             messagebox.showerror("Error", "Passwords do not match.")
         elif self.check.get() == 0:
             messagebox.showerror("Error", "Accept Terms & Conditions.")
-        else:
+        elif len(self.password_entry.get()) > 5 and any(char.isupper() for char in self.password_entry.get()):
             self.create_account()
+        else:
+            messagebox.showerror("Error", "Password needs to be longer than 5 characters and include a capital letter.")
 
 
 if __name__ == "__main__":
