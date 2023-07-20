@@ -106,7 +106,7 @@ class LoginPage(tk.Tk):
             messagebox.showerror("Error", "All fields must be filled.")
         else:
             try:
-                con = pymysql.connect(host='localhost', user='root', password='Creatinemonohydrate04!')
+                con = pymysql.connect(host='localhost', user='root', password****************')
                 my_curser = con.cursor()
             except:
                 messagebox.showerror("Error", "Failed to connect to database")
