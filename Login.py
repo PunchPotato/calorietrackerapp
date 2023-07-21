@@ -42,7 +42,7 @@ class LoginPage(tk.Tk):
 
         self.forget_button = Button(self, text='Forgot Password?', bd=0, bg='white', activebackground='white',
                                     cursor='hand2', font=("typewriter", 9, "bold"), fg='firebrick1',
-                                    activeforeground='firebrick1')
+                                    activeforeground='firebrick1', command=self.forgot_password)
         self.forget_button.place(x=410, y=495)
 
         tk.Frame(self, width=300, height=2, bg="#0d2158").place(y=390, x=220)
@@ -99,6 +99,11 @@ class LoginPage(tk.Tk):
         import Signup
         Signup.SignupPage().mainloop()
 
+    def forgot_password(self):
+        self.destroy()
+        import ForgotPassword
+        ForgotPassword.ForgotPasswordPage().mainloop()
+
     def connect_database(self):
         if self.name_entry.get() == '' or self.password_entry.get() == '':
             messagebox.showerror("Error", "All fields must be filled.")
@@ -106,7 +111,7 @@ class LoginPage(tk.Tk):
             messagebox.showerror("Error", "All fields must be filled.")
         else:
             try:
-                con = pymysql.connect(host='localhost', user='root', password****************')
+                con = pymysql.connect(host='localhost', user='root', password='******************')
                 my_curser = con.cursor()
             except:
                 messagebox.showerror("Error", "Failed to connect to database")
