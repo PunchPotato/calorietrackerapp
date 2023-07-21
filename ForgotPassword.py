@@ -43,6 +43,20 @@ class ForgotPasswordPage(tk.Tk):
                                                width=19)
         self.reset_password_button.place(x=215, y=580)
 
+        self.login_lable = Label(self, text="Now...", font=('Open Sans', 9), fg='firebrick1',
+                                 bg='white')
+        self.login_lable.place(x=325, y=680)
+
+        self.login_button = Button(self, text='Log In', font=('Open Sans', 9, 'bold underline'),
+                                       fg='blue', bg='white', activeforeground='blue', activebackground='white',
+                                       cursor='hand2', bd=0, command=self.login_page)
+        self.login_button.place(x=360, y=680)
+
+    def login_page(self):
+        self.destroy()
+        import Login
+        Login.LoginPage().mainloop()
+
 if __name__ == "__main__":
     forgot_password_page = ForgotPasswordPage()
     forgot_password_page.mainloop()
