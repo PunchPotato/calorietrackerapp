@@ -2,6 +2,9 @@ import tkinter as tk
 from tkinter import font
 from tkinter import *
 from PIL import ImageTk, Image
+from tkinter import messagebox
+import pymysql
+
 
 class ForgotPasswordPage(tk.Tk):
     def __init__(self):
@@ -40,7 +43,8 @@ class ForgotPasswordPage(tk.Tk):
                                                activebackground='#0d2158',
                                                cursor='hand2',
                                                fg="white",
-                                               width=19)
+                                               width=19,
+                                               command=self.connect_to_email)
         self.reset_password_button.place(x=215, y=580)
 
         self.login_lable = Label(self, text="Now...", font=('Open Sans', 9), fg='firebrick1',
@@ -57,6 +61,44 @@ class ForgotPasswordPage(tk.Tk):
         import Login
         Login.LoginPage().mainloop()
 
+
+    def connect_to_email(self):
+        email = self.email_entry.get().strip()
+
+        if email == '':
+            messagebox.showerror("Error", "All fields must be filled.")
+            return
+
+        con = None
+        my_cursor = None
+        try:
+            con = pymysql.connect(host='localhost', user='root', password='*****************',
+                                  database='mydatabase')
+            my_cursor = con.cursor()
+
+            query = 'SELECT * FROM user_data WHERE email = %s'
+            my_cursor.execute(query, (email,))
+            row = my_cursor.fetchone()
+
+            if row is None:
+                messagebox.showerror('Error', 'Email is not valid')
+            else:
+                messagebox.showinfo('Success', 'Email has been sent.')
+
+        except pymysql.Error as e:
+            messagebox.showerror("Error", "Failed to connect to the database: " + str(e))
+
+        finally:
+            try:
+                if my_cursor is not None:
+                    my_cursor.close()
+                if con is not None:
+                    con.close()
+            except pymysql.Error:
+                pass
+
+
 if __name__ == "__main__":
     forgot_password_page = ForgotPasswordPage()
     forgot_password_page.mainloop()
+    
