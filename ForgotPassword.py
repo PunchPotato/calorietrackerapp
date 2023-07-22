@@ -65,7 +65,6 @@ class ForgotPasswordPage(tk.Tk):
         Login.LoginPage().mainloop()
 
     def send_email(self, to_address):
-        # Replace the placeholders with your SMTP server and email credentials
         smtp_server = os.environ.get('SMPT_SERVER')
         smtp_port = int(os.environ.get('SMPT_PORT'))
         sender_email = os.environ.get('MY_EMAIL')
