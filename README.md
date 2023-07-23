@@ -1,2 +1,1 @@
-# calorietrackerapp
-In progress of being made
+[Click here to see updated project :)](https://github.com/PunchPotato/appdevelopment)
